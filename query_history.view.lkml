@@ -1,17 +1,26 @@
 view: query_history {
-  sql_table_name: ACCOUNT_USAGE.QUERY_HISTORY ;;
-
-#   dimension: id {
-#     primary_key: yes
-#     type: string
-#     sql: ${TABLE}.ID ;;
-#   }
+  sql_table_name: SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY ;;
 
   dimension: compilation_time {
     type: string
     sql: ${TABLE}.COMPILATION_TIME ;;
   }
 
+  dimension: looker_query_context {
+    type: string
+    hidden: yes
+    sql: PARSE_JSON(regexp_substr(regexp_substr(query_text, 'Query\\sContext\\s\'\{.*\}\''),'\{.*\}')) ;;
+  }
+
+  dimension: looker_history_id {
+    type: number
+    sql: ${looker_query_context}:history_id ;;
+  }
+
+  dimension: looker_user_id {
+    type: number
+    sql: ${looker_query_context}:user_id ;;
+  }
 #   dimension: database_id {
 #     type: number
 #     # hidden: yes
@@ -42,9 +51,9 @@ view: query_history {
     sql: ${TABLE}.ERROR_CODE ;;
   }
 
-  dimension: error_name {
+  dimension: error_message {
     type: string
-    sql: ${TABLE}.ERROR_NAME ;;
+    sql: ${TABLE}.ERROR_MESSAGE ;;
   }
 
   dimension: execution_status {
@@ -64,6 +73,7 @@ view: query_history {
 
   dimension: query_id {
     type: string
+    primary_key: yes
     sql: ${TABLE}.QUERY_ID ;;
   }
 
@@ -124,7 +134,7 @@ view: query_history {
     sql: ${TABLE}.START_TIME ;;
   }
 
-  dimension: total_elapsed_time {
+  dimension: elapsed_time {
     type: number
     sql: ${TABLE}.TOTAL_ELAPSED_TIME ;;
   }
@@ -138,11 +148,6 @@ view: query_history {
     type: string
     sql: ${TABLE}.USER_NAME ;;
   }
-
-#   dimension: warehouse_id {
-#     type: number
-#     sql: ${TABLE}.WAREHOUSE_ID ;;
-#   }
 
   dimension: warehouse_name {
     type: string
@@ -175,6 +180,7 @@ view: query_history {
     type: count
     filters: {field: start_date value: "this month"}
     alias: [current_mtd_job_count, current_month_job_count]
+    drill_fields: [user_name,warehouse_name,database_name,current_mtd_query_count]
   }
 
   measure: prior_month_total_query_count {
@@ -193,26 +199,72 @@ view: query_history {
 
   measure: average_execution_time {
     type: average
+    group_label: "Runtime Metrics"
     sql: ${execution_time} ;;
     value_format_name: decimal_2
   }
 
   measure: total_execution_time {
     type: sum
+    group_label: "Runtime Metrics"
     sql: ${execution_time} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: total_queued_overload_time {
+    type: sum
+    group_label: "Runtime Metrics"
+    sql: ${queued_overload_time} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: total_elapsed_time {
+    type: sum
+    group_label: "Runtime Metrics"
+    sql: ${elapsed_time} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: total_queued_repair_time  {
+    type: sum
+    group_label: "Runtime Metrics"
+    sql: ${queued_repair_time} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: total_compilation_time  {
+    type: sum
+    group_label: "Runtime Metrics"
+    sql: ${compilation_time} ;;
+    value_format_name: decimal_2
+  }
+
+  measure: total_queued_provisioning_time  {
+    type: sum
+    group_label: "Runtime Metrics"
+    sql: ${queued_provisioning_time} ;;
+    value_format_name: decimal_2
+  }
+  measure: total_transaction_blocked_time  {
+    type: sum
+    group_label: "Runtime Metrics"
+    sql: ${transaction_blocked_time} ;;
     value_format_name: decimal_2
   }
 
   measure: current_mtd_avg_exec_time {
     type: average
     sql: ${execution_time} ;;
+    group_label: "Runtime Metrics"
     filters: {field: start_date value: "this month"}
     value_format_name: decimal_2
+    drill_fields: [user_name,warehouse_name,database_name,current_mtd_avg_exec_time]
   }
 
   measure: prior_mtd_avg_exec_time {
     type:  average
     sql:  ${execution_time} ;;
+    group_label: "Runtime Metrics"
     filters: {field: is_prior_month_mtd value: "yes"}
     value_format_name: decimal_2
   }

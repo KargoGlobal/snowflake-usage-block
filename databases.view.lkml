@@ -1,10 +1,10 @@
 view: databases {
-  sql_table_name: ACCOUNT_USAGE.DATABASES ;;
+  sql_table_name: SNOWFLAKE.ACCOUNT_USAGE.DATABASES ;;
 
   dimension: id {
     primary_key: yes
     type: number
-    sql: ${TABLE}.ID ;;
+    sql: ${TABLE}.DATABASE_ID ;;
   }
 
   dimension: comment {

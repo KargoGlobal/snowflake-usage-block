@@ -1,5 +1,5 @@
 view: warehouse_metering_history {
-  sql_table_name: ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY ;;
+  sql_table_name: SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY ;;
 
   dimension: credits_used {
     type: number
@@ -82,6 +82,7 @@ view: warehouse_metering_history {
     sql:  ${credits_used} ;;
     filters: {field: start_date value: "this month"}
     value_format: "$0.000,\" K\""
+    drill_fields: [warehouse_name,total_credits_used]
   }
 
   measure: prior_mtd_credits_used {
