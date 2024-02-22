@@ -59,7 +59,7 @@ view: snowpark_container_services_history {
     label: "Credits Used"
     type: sum
     sql: ${credits_used} ;;
-    value_format_name: decimal_2
+    value_format_name: usd_0
     hidden: no
   }
 

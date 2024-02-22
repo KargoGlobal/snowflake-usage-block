@@ -53,6 +53,7 @@ view: metering_history {
   }
 
   dimension: name {
+    label: "Warehouse Name"
     type: string
     sql: ${TABLE}."NAME" ;;
   }
@@ -112,7 +113,7 @@ view: metering_history {
     label: "Credits Used"
     type: sum
     sql: ${credits_used} ;;
-    value_format_name: decimal_2
+    value_format_name: usd_0
     hidden: no
   }
 
@@ -120,7 +121,7 @@ view: metering_history {
     label: "Credits Used Cloud Services"
     type: sum
     sql: ${credits_used_cloud_services} ;;
-    value_format_name: decimal_2
+    value_format_name: usd_0
     hidden: no
   }
 
@@ -128,7 +129,7 @@ view: metering_history {
     label: "Credits Used Compute"
     type: sum
     sql: ${credits_used_compute} ;;
-    value_format_name: decimal_2
+    value_format_name: usd_0
     hidden: no
   }
 

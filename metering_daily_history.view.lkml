@@ -64,7 +64,7 @@ view: metering_daily_history {
     label: "Credits Adjustment Cloud Services"
     type: sum
     sql: ${credits_adjustment_cloud_services} ;;
-    value_format_name: decimal_2
+    value_format_name: usd_0
     hidden: no
   }
 
@@ -72,7 +72,7 @@ view: metering_daily_history {
     label: "Credits Billed"
     type: sum
     sql: ${credits_billed} ;;
-    value_format_name: decimal_2
+    value_format_name: usd_0
     hidden: no
   }
 
@@ -80,7 +80,7 @@ view: metering_daily_history {
     label: "Credits Used"
     type: sum
     sql: ${credits_used} ;;
-    value_format_name: decimal_2
+    value_format_name: usd_0
     hidden: no
   }
 
@@ -88,7 +88,7 @@ view: metering_daily_history {
     label: "Credits Used Cloud Services"
     type: sum
     sql: ${credits_used_cloud_services} ;;
-    value_format_name: decimal_2
+    value_format_name: usd_0
     hidden: no
   }
 
@@ -96,7 +96,7 @@ view: metering_daily_history {
     label: "Credits Used Compute"
     type: sum
     sql: ${credits_used_compute} ;;
-    value_format_name: decimal_2
+    value_format_name: usd_0
     hidden: no
   }
 
