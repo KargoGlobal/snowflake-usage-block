@@ -52,8 +52,7 @@ view: metering_history {
     sql: ${TABLE}."SERVICE_TYPE" ;;
   }
 
-  dimension: name {
-    label: "Warehouse Name"
+  dimension: warehouse_name {
     type: string
     sql: ${TABLE}."NAME" ;;
   }
@@ -99,21 +98,52 @@ view: metering_history {
     hidden: yes
   }
 
+  dimension: is_prior_month_mtd {
+    type: yesno
+    sql:  EXTRACT(month, ${start_raw}) = EXTRACT(month, current_timestamp()) - 1
+      and ${start_raw} <= dateadd(month, -1, current_timestamp())  ;;
+  }
+
 #Measures
+
+  measure: count {
+    type: count
+    drill_fields: [warehouse_name,count]
+  }
+
+  measure: average_credits_used {
+    type: average
+    sql:  ${credits_used} ;;
+    drill_fields: [start_date, average_credits_used]
+  }
+
+  measure: total_credits_used {
+    type: sum
+    sql: ${credits_used} ;;
+    value_format_name: usd_0
+    drill_fields: [start_date, total_credits_used]
+  }
+
+  measure: current_mtd_credits_used {
+    type: sum
+    sql:  ${credits_used} ;;
+    filters: {field: start_date value: "this month"}
+    value_format: "$0.000,\" K\""
+    drill_fields: [warehouse_name,total_credits_used]
+  }
+
+  measure: prior_mtd_credits_used {
+    type: sum
+    sql:  ${credits_used} ;;
+    filters: {field: is_prior_month_mtd value: "yes"}
+
+  }
 
   measure: bytes_sum {
     label: "Bytes"
     type: sum
     sql: ${bytes} ;;
     value_format_name: decimal_2
-    hidden: no
-  }
-
-  measure: credits_used_sum {
-    label: "Credits Used"
-    type: sum
-    sql: ${credits_used} ;;
-    value_format_name: usd_0
     hidden: no
   }
 
