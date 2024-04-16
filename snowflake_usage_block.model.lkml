@@ -54,7 +54,6 @@ explore: storage_usage {}
 
 explore: warehouse_metering_history {}
 
-
 explore: metering_daily_history {}
 
 explore: metering_history {}
