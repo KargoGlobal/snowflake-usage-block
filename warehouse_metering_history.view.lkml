@@ -1,9 +1,20 @@
 view: warehouse_metering_history {
   sql_table_name: SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY ;;
 
-  dimension: credits_used {
+  dimension: credits_used_raw {
+    label: "Credits Used (Raw)"
     type: number
     sql: ${TABLE}.CREDITS_USED ;;
+    hidden: yes
+  }
+
+  dimension: credits_used {
+    type: number
+    description: "Credits used multiplied by snowflake cost per credit"
+    # snowflake cost per credit: $1.79 before 2024-10-15, $1.59 on and after 2024-10-15
+    sql: CASE WHEN date(${TABLE}.END_TIME) <= '2024-10-15' THEN 1.79 * ${TABLE}.CREDITS_USED
+              ELSE 1.59 * ${TABLE}.CREDITS_USED
+              END;;
     alias: [credits]
   }
 
