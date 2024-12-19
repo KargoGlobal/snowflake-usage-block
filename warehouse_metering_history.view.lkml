@@ -15,7 +15,6 @@ view: warehouse_metering_history {
     sql: CASE WHEN date(${TABLE}.END_TIME) <= '2024-10-15' THEN 1.79 * ${TABLE}.CREDITS_USED
               ELSE 1.59 * ${TABLE}.CREDITS_USED
               END;;
-
     alias: [credits]
   }
 
